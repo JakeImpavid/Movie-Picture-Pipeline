@@ -135,7 +135,7 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          kubectl set image deployment/frontend-deployment frontend-container=${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
+          kubectl set image deployment/frontend frontend=${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
           kubectl apply -f starter/frontend/k8s/
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
