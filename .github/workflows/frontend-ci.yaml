@@ -21,18 +21,18 @@ jobs:
       - name: Cache Node.js modules
         uses: actions/cache@v3  # Updated to v3 for Node.js 16/20 compatibility
         with:
-          path: starter/node_modules  # Adjusted path to reflect the starter folder
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/package-lock.json') }}
+          path: starter/frontend/node_modules  # Adjusted path to reflect the correct directory
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./starter  # Set working-directory to the "starter" folder
+        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
 
       - name: Run lint
         run: npm run lint
-        working-directory: ./starter  # Set working-directory to the "starter" folder
+        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
 
   # Test job
   test:
@@ -49,18 +49,18 @@ jobs:
       - name: Cache Node.js modules
         uses: actions/cache@v3  # Updated to v3
         with:
-          path: starter/node_modules  # Adjusted path
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/package-lock.json') }}
+          path: starter/frontend/node_modules  # Adjusted path
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./starter  # Set working-directory to the "starter" folder
+        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
 
       - name: Run tests
         run: npm run test
-        working-directory: ./starter  # Set working-directory to the "starter" folder
+        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
 
   # Build job, depends on lint and test jobs
   build:
@@ -80,15 +80,15 @@ jobs:
       - name: Cache Node.js modules
         uses: actions/cache@v3  # Updated to v3
         with:
-          path: starter/node_modules  # Adjusted path
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/package-lock.json') }}
+          path: starter/frontend/node_modules  # Adjusted path
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./starter  # Set working-directory to the "starter" folder
+        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
 
       - name: Build Docker image
         run: docker build -t frontend-app .
-        working-directory: ./starter  # Set working-directory to the "starter" folder
+        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
