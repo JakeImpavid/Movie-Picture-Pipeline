@@ -70,7 +70,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build --build-arg REACT_APP_MOVIE_API_URL=${{ secrets.REACT_APP_MOVIE_API_URL }} -t frontend-app:${{ github.sha }} .
+        run: docker build -t frontend-app:${{ github.sha }} .
         working-directory: ./starter/frontend
 
   # ECR login and push Docker image
@@ -82,10 +82,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Login to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          registry: ${{ secrets.FRONTEND_ECR }}
+          mask-password: true  # Ensure Docker password is masked
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
 
       - name: Tag and Push Docker image to ECR
         run: |
@@ -101,9 +104,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Configure kubectl for EKS
-        run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.FRONTEND_ECR }}
+        run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
 
       - name: Deploy to EKS
         run: |
-          kubectl set image deployment/frontend-deployment frontend-container=${{ secrets.AFRONTEND_ECR }}/frontend-app:${{ github.sha }}
+          kubectl set image deployment/frontend-deployment frontend-container=${{ secrets.FRONTEND_ECR }}/frontend-app:${{ github.sha }}
           kubectl apply -f starter/frontend/k8s/
