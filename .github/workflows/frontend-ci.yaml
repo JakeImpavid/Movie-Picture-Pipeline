@@ -1,4 +1,4 @@
-name: Frontend Continous Integration
+name: Frontend CI
 
 # Trigger the workflow on pull requests and allow manual runs
 on:
@@ -11,15 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to v3 to support Node.js 16/20
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3  # Ensure using the correct version
         with:
-          node-version: '16'
+          node-version: '20'  # Update Node.js to the latest stable version (20)
 
       - name: Cache Node.js modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3  # Updated to v3 for Node.js 16/20 compatibility
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
@@ -37,15 +37,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3  # Ensure using the correct version
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Cache Node.js modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3  # Updated to v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
@@ -66,15 +66,15 @@ jobs:
       - test
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3  # Ensure using the correct version
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Cache Node.js modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3  # Updated to v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
