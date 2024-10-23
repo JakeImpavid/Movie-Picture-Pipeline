@@ -30,6 +30,10 @@ jobs:
         run: npm install
         working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
 
+      - name: Run prettier to fix formatting
+        run: npx prettier --write .
+        working-directory: ./starter/frontend
+        
       - name: Run lint
         run: npm run lint
         working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
