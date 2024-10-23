@@ -20,10 +20,8 @@ jobs:
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
-          path: starter/frontend/node_modules  # Path to node_modules in the starter/frontend directory
+          path: ./starter/frontend/node_modules  # Path to node_modules in the starter/frontend directory
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}  # Cache key based on package-lock.json in starter/frontend
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
@@ -48,17 +46,15 @@ jobs:
       - name: Cache Node.js modules
         uses: actions/cache@v3  # Cache node_modules for the test step
         with:
-          path: starter/frontend/node_modules
+          path: ./starter/frontend/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}  # Use package-lock.json in starter/frontend
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
         working-directory: ./starter/frontend
 
       - name: Run tests
-        run: npm run test --passWithNoTests
+        run: npm run test
         working-directory: ./starter/frontend
 
   # Build job, depends on lint and test jobs
@@ -79,10 +75,8 @@ jobs:
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
-          path: starter/frontend/node_modules
+          path: ./starter/frontend/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}  # Cache based on package-lock.json in starter/frontend
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
