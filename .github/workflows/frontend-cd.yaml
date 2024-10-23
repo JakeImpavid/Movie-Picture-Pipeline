@@ -84,10 +84,10 @@ jobs:
         run: docker images
 
       - name: Tag Docker image for ECR
-        run: docker tag frontend-app:${{ github.sha }} ${{ secrets.FRONTEND_ECR }}/:${{ github.sha }}
+        run: docker tag frontend-app:${{ github.sha }} ${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
 
       - name: Push Docker image to ECR
-        run: docker push ${{ secrets.FRONTEND_ECR }}/:${{ github.sha }}
+        run: docker push ${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
 
 
   # Deploy to EKS
@@ -103,5 +103,5 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          kubectl set image deployment/frontend-deployment frontend-container=${{ secrets.FRONTEND_ECR }}/:${{ github.sha }}
+          kubectl set image deployment/frontend-deployment frontend-container=${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
           kubectl apply -f starter/frontend/k8s/
