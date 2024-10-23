@@ -58,7 +58,7 @@ jobs:
         working-directory: ./starter/frontend
 
       - name: Run tests
-        run: npm run test ./starter/frontend/src/setupTests.js
+        run: npm run test --passWithNoTests
         working-directory: ./starter/frontend
 
   # Build job, depends on lint and test jobs
