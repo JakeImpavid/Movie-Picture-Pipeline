@@ -111,11 +111,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
-      - name: Tag and Push Docker image to ECR
-        run: |
-          docker tag frontend-app:${{ github.sha }} ${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
-          docker push ${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
-
       - name: Configure kubectl for EKS
         run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
         env:
