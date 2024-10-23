@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm install
         working-directory: ./starter/frontend  # Directory where package.json and package-lock.json are located
-        
+
       - name: Run lint
         run: npm run lint
         working-directory: ./starter/frontend
@@ -59,7 +59,7 @@ jobs:
 
       - name: Run tests
         run: npm run test
-        working-directory: ./starter/frontend
+        working-directory: ./starter/fronten
 
   # Build job, depends on lint and test jobs
   build:
