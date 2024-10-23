@@ -28,11 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm install
         working-directory: ./starter/frontend  # Directory where package.json and package-lock.json are located
-
-      - name: Run prettier to fix formatting
-        run: npx prettier --write .
-        working-directory: ./starter/frontend
-
+        
       - name: Run lint
         run: npm run lint
         working-directory: ./starter/frontend
