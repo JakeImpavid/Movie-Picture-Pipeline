@@ -67,7 +67,7 @@ jobs:
       - test
     steps:
       - name: Checkout code
-       uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
