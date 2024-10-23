@@ -104,11 +104,17 @@ jobs:
           chmod +x ./aws-iam-authenticator
           sudo mv aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
 
+      # Install Kustomize from GitHub releases
       - name: Install Kustomize
         run: |
-          sudo apt-get update
-          sudo apt-get install -y kustomize
-
+          curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest \
+          | grep browser_download_url \
+          | grep linux_amd64 \
+          | cut -d '"' -f 4 \
+          | wget -qi - \
+          && tar xzf kustomize_v*_linux_amd64.tar.gz \
+          && sudo mv kustomize /usr/local/bin/
+      
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
         env:
@@ -130,6 +136,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           
+      # Apply Kustomize Configurations
       - name: Apply Kustomize Configurations
         run: |
           kubectl apply -k starter/frontend/k8s/
