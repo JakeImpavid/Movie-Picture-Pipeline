@@ -27,7 +27,7 @@ jobs:
           key: ${{ runner.os }}-pipenv-${{ hashFiles('starter/backend/Pipfile.lock') }}
 
       - name: Install dependencies with Pipenv
-        run: pipenv install --deploy --ignore-pipfile
+        run: pipenv install --deploy
         working-directory: ./starter/backend
 
       - name: Run lint
