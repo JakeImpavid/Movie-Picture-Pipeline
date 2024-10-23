@@ -60,26 +60,14 @@ jobs:
         working-directory: ./starter/frontend
 
   # Build job, depends on lint and test jobs
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - lint
       - test
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Build Docker image
-        run:  docker build --build-arg REACT_APP_MOVIE_API_URL=${{ secrets.REACT_APP_MOVIE_API_URL }} -t frontend-app:${{ github.sha }} .
-        working-directory: ./starter/frontend
-
-  # ECR login and push Docker image
-  push-to-ecr:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+       uses: actions/checkout@v3
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
@@ -88,7 +76,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
-      - name: List Docker images
+      - name: Build Docker image
+        run: docker build --build-arg REACT_APP_MOVIE_API_URL=${{ secrets.REACT_APP_MOVIE_API_URL }} -t frontend-app:${{ github.sha }} .
+        working-directory: ./starter/frontend
+
+      - name: List Docker images (for debugging)
         run: docker images
 
       - name: Tag Docker image for ECR
@@ -96,6 +88,7 @@ jobs:
 
       - name: Push Docker image to ECR
         run: docker push ${{ secrets.FRONTEND_ECR }}/frontend-app:${{ github.sha }}
+
 
   # Deploy to EKS
   deploy:
