@@ -31,7 +31,7 @@ jobs:
         working-directory: ./starter/backend
 
       - name: Run lint
-        run: pipenv run flake8 starter/backend
+        run: pipenv run .flake8 starter/backend
         working-directory: ./starter/backend
 
   # # Test job
