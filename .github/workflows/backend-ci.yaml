@@ -34,57 +34,60 @@ jobs:
         run: pipenv run flake8
         working-directory: ./starter/backend
 
-  # # Test job
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+  # Test job
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '20'
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-  #     - name: Cache Node.js modules
-  #       uses: actions/cache@v3  # Cache node_modules for the test step
-  #       with:
-  #         path: ./starter/backend/node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('starter/backend/package-lock.json') }}  # Use package-lock.json in starter/backend
+      - name: Install Pipenv
+        run: pip install pipenv
 
-  #     - name: Install dependencies
-  #       run: npm install
-  #       working-directory: ./starter/backend
+      - name: Cache Pipenv environment
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/virtualenvs  # Cache Pipenv virtual environment
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('starter/backend/Pipfile.lock') }}
 
-  #     - name: Run tests
-  #       run: npm run test
-  #       working-directory: ./starter/backend
+      - name: Install dependencies with Pipenv
+        run: pipenv install --dev
+        working-directory: ./starter/backend
 
-  # # Build job, depends on lint and test jobs
-  # build:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - lint
-  #     - test
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+      - name: Run tests
+        run: pytest
+        working-directory: ./starter/backend
 
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '20'
+  # Build job, depends on lint and test jobs
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  #     - name: Cache Node.js modules
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: ./starter/backend/node_modules
-  #         key: ${{ runner.os }}-node-${{ hashFiles('starter/backend/package-lock.json') }}  # Cache based on package-lock.json in starter/backend
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-  #     - name: Install dependencies
-  #       run: npm install
-  #       working-directory: ./starter/backend
+      - name: Install Pipenv
+        run: pip install pipenv
 
-  #     - name: Build Docker image
-  #       run: docker build -t backend-app .
-  #       working-directory: ./starter/backend
+      - name: Cache Pipenv environment
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/virtualenvs  # Cache Pipenv virtual environment
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('starter/backend/Pipfile.lock') }}
+
+      - name: Install dependencies with Pipenv
+        run: pipenv install --dev
+        working-directory: ./starter/backend
+
+      - name: Build Docker image
+        run: docker build -t backend-app .
+        working-directory: ./starter/backend
