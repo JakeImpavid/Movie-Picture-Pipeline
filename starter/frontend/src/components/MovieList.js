@@ -1,29 +1,29 @@
-// src/components/MovieList.js
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import axios from 'axios';
 
-const moviesData = [
-  { id: 1, title: 'Inception', year: 2010 },
-  { id: 2, title: 'Interstellar', year: 2014 },
-  { id: 3, title: 'The Dark Knight', year: 2008 },
-];
-
-export default function MovieList({ onMovieClick }) {
+function MovieList({ onMovieClick }) {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
-    // Simulate API call
-    setMovies(moviesData); // In reality, you would fetch this from an API
+    axios.get(`${process.env.REACT_APP_MOVIE_API_URL}/movies`).then((response) => {
+      setMovies(response.data.movies);
+    });
   }, []);
 
   return (
-    <div className="movie-list">
-      <ul>
-        {movies.map((movie) => (
-          <li key={movie.id} onClick={() => onMovieClick(movie)}>
-            {movie.title} ({movie.year})
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul>
+      {movies.map((movie) => (
+        <li className="movieItem" key={movie.id} onClick={() => onMovieClick(movie)}>
+          {movie.title}
+        </li>
+      ))}
+    </ul>
   );
 }
+
+MovieList.propTypes = {
+  onMovieClick: PropTypes.func.isRequired,
+};
+
+export default MovieList;
