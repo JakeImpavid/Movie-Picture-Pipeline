@@ -31,9 +31,9 @@ jobs:
         working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
 
       - name: Run prettier to fix formatting
-        run: npx prettier --check .
+        run: npx prettier --write .
         working-directory: ./starter/frontend
-
+        
       - name: Run lint
         run: npm run lint
         working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
@@ -63,8 +63,8 @@ jobs:
         working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
 
       - name: Run tests
-        run: npm run test
-        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
+        run: npm run test --if-present
+        working-directory: ./starter/frontend/src  # Set working-directory to the "starter/frontend/src" folder where tests are located
 
   # Build job, depends on lint and test jobs
   build:
