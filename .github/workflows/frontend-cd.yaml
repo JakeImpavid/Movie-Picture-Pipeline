@@ -92,13 +92,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Install AWS CLI and kubectl
+    # Install AWS CLI and kubectl
       - name: Install AWS CLI and kubectl
         run: |
           sudo apt-get update
           sudo apt-get install -y awscli
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        # Install AWS IAM Authenticator
+          curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2020-11-02/bin/linux/amd64/aws-iam-authenticator
+          chmod +x ./aws-iam-authenticator
+          sudo mv aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Tag and Push Docker image to ECR
+        run: |
+          docker tag frontend-app:${{ github.sha }} ${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
+          docker push ${{ secrets.FRONTEND_ECR }}:${{ github.sha }}
 
       - name: Configure kubectl for EKS
         run: aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.EKS_CLUSTER_NAME }}
