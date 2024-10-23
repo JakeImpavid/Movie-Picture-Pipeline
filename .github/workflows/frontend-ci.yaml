@@ -1,6 +1,5 @@
 name: Frontend CI
 
-# Trigger the workflow on pull requests and allow manual runs
 on:
   pull_request:
   workflow_dispatch:
@@ -11,88 +10,88 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Updated to v3 to support Node.js 16/20
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3  # Ensure using the correct version
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Use Node.js 20 as the latest stable version
+          node-version: '20'
 
       - name: Cache Node.js modules
-        uses: actions/cache@v3  # Updated to v3 for Node.js 16/20 compatibility
+        uses: actions/cache@v3
         with:
-          path: starter/frontend/node_modules  # Adjusted path to reflect the correct directory
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
+          path: starter/frontend/node_modules  # Path to node_modules in the starter/frontend directory
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}  # Cache key based on package-lock.json in starter/frontend
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
+        working-directory: ./starter/frontend  # Directory where package.json and package-lock.json are located
 
       - name: Run prettier to fix formatting
         run: npx prettier --write .
         working-directory: ./starter/frontend
-        
+
       - name: Run lint
         run: npm run lint
-        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
+        working-directory: ./starter/frontend
 
   # Test job
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Updated to v3
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3  # Ensure using the correct version
+        uses: actions/setup-node@v3
         with:
           node-version: '20'
 
       - name: Cache Node.js modules
-        uses: actions/cache@v3  # Updated to v3
+        uses: actions/cache@v3  # Cache node_modules for the test step
         with:
-          path: starter/frontend/node_modules  # Adjusted path
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
+          path: starter/frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}  # Use package-lock.json in starter/frontend
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
+        working-directory: ./starter/frontend
 
       - name: Run tests
-        run: npm run test --if-present
-        working-directory: ./starter/frontend/src  # Set working-directory to the "starter/frontend/src" folder where tests are located
+        run: npm run test
+        working-directory: ./starter/frontend
 
   # Build job, depends on lint and test jobs
   build:
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - lint
       - test
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Updated to v3
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3  # Ensure using the correct version
+        uses: actions/setup-node@v3
         with:
           node-version: '20'
 
       - name: Cache Node.js modules
-        uses: actions/cache@v3  # Updated to v3
+        uses: actions/cache@v3
         with:
-          path: starter/frontend/node_modules  # Adjusted path
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
+          path: starter/frontend/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}  # Cache based on package-lock.json in starter/frontend
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
+        working-directory: ./starter/frontend
 
       - name: Build Docker image
         run: docker build -t frontend-app .
-        working-directory: ./starter/frontend  # Set working-directory to the "starter/frontend" folder
+        working-directory: ./starter/frontend
